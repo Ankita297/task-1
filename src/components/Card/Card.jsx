@@ -1,7 +1,7 @@
 import { useState } from "react";
 import LoadingSpinner from "../../asset/LoaderSpinner.svg";
 import classes from "./style.module.css";
-const Card = ({  type, title, _id, handleOverlay }) => {
+const Card = ({ type, title, _id, handleOverlay }) => {
   const [loading, setLoading] = useState(true);
 
   const handleLoad = () => {
@@ -16,7 +16,7 @@ const Card = ({  type, title, _id, handleOverlay }) => {
         return "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif";
       case "invoice":
         return "https://media.giphy.com/media/Lq0h93752f6J9tijrh/giphy.gif";
-      case "bank-draft-2":
+      case "bank-draft":
         return "https://media.giphy.com/media/GeimqsH0TLDt4tScGw/giphy.gif";
       case "bill-of-lading-2":
         return "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif";
@@ -35,7 +35,7 @@ const Card = ({  type, title, _id, handleOverlay }) => {
       >
         <p>{title}</p>
         {loading && <img src={LoadingSpinner} alt="spinner" />}
-        
+
         <img
           src={getImage(type)}
           alt={title}
