@@ -16,8 +16,8 @@ const Card = ({ type, title, _id, handleOverlay }) => {
         return "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif";
       case "invoice":
         return "https://media.giphy.com/media/Lq0h93752f6J9tijrh/giphy.gif";
-      case "bank-draft":
-        return "https://media.giphy.com/media/GeimqsH0TLDt4tScGw/giphy.gif";
+      case "bank-draft-2":
+        return "https://media.giphy.com/media/5aCiXMnPl1cli/giphy.gif";
       case "bill-of-lading-2":
         return "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif";
       default:
