@@ -1,16 +1,17 @@
 import "./App.css";
 import Card from "./components/Card/Card";
-import images from "./../src/constant/thumbnail.json";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ImageOverlay } from "./components/ImageOverlay/ImageOverlay";
+import moment from "moment/moment";
 function App() {
   const [showOverlay, setShowOVerlay] = useState(false);
   const [overlayImg, setOverlayImg] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const prevDataRef = useRef([]);
+  const [lastSave, setLastSave] = useState(Date.now());
 
   const [cardsData, setCardsData] = useState([]);
-
   //persist the reordering logic
   const handleDragEnd = (result) => {
     if (!result.destination) {
@@ -56,12 +57,11 @@ function App() {
     getData();
   }, []);
 
-
-
-  // api call to post Data 
+  // api call to post Data
 
   const saveData = () => {
     setIsLoading(true);
+
     fetch("/api/data", {
       method: "POST",
       headers: {
@@ -71,6 +71,8 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
+        prevDataRef.current = data;
+        setLastSave(new Date());
         setIsLoading(false);
       })
       .catch((error) => console.error(error));
@@ -78,7 +80,10 @@ function App() {
 
   useEffect(() => {
     const saveInterval = setInterval(() => {
-      saveData();
+      //check if there is change in data
+      if (JSON.stringify(cardsData) !== JSON.stringify(prevDataRef.current)) {
+        saveData();
+      }
     }, 5000);
 
     return () => {
@@ -86,8 +91,17 @@ function App() {
     };
   }, [cardsData]);
 
+  
   return (
     <>
+      {isLoading ? (
+        <h1>Loading...</h1>
+      ) : (
+        <p>
+          Data has been saved{" "}
+          {moment.duration(Date.now() - lastSave).humanize()}
+        </p>
+      )}
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId="card-list">
           {(provided) => (
@@ -107,7 +121,6 @@ function App() {
                     >
                       <Card
                         title={each.title}
-                        img={images[_idx].img}
                         type={each.type}
                         _id={_idx}
                         handleOverlay={(img) => {

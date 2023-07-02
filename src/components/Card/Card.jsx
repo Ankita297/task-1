@@ -1,8 +1,7 @@
 import { useState } from "react";
 import LoadingSpinner from "../../asset/LoaderSpinner.svg";
 import classes from "./style.module.css";
-import { ImageOverlay } from "../ImageOverlay/ImageOverlay";
-const Card = ({ img, type, title, _id, handleOverlay }) => {
+const Card = ({  type, title, _id, handleOverlay }) => {
   const [loading, setLoading] = useState(true);
 
   const handleLoad = () => {
