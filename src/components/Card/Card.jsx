@@ -36,7 +36,13 @@ const Card = ({ img, type, title, _id, handleOverlay }) => {
       >
         <p>{title}</p>
         {loading && <img src={LoadingSpinner} alt="spinner" />}
-        <img src={getImage(type)} alt={title} onLoad={handleLoad} />
+        
+        <img
+          src={getImage(type)}
+          alt={title}
+          onLoad={handleLoad}
+          style={{ display: loading ? "none" : "block" }}
+        />
       </div>
     </div>
   );

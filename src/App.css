@@ -42,6 +42,8 @@
   flex: 1;
   flex-wrap: wrap;
   flex-direction: row;
+  margin: 1rem;
+  align-items: center;
 }
 .eachCard{
   margin: 12px;

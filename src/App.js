@@ -1,16 +1,15 @@
 import "./App.css";
-import data from "./../src/constant/data.json";
 import Card from "./components/Card/Card";
 import images from "./../src/constant/thumbnail.json";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useEffect, useState } from "react";
 import { ImageOverlay } from "./components/ImageOverlay/ImageOverlay";
-
 function App() {
   const [showOverlay, setShowOVerlay] = useState(false);
   const [overlayImg, setOverlayImg] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [cardsData, setCardsData] = useState(data);
+  const [cardsData, setCardsData] = useState([]);
 
   //persist the reordering logic
   const handleDragEnd = (result) => {
@@ -24,10 +23,26 @@ function App() {
     //remove dragged card from its actual position and add it to destination
     const [draggedCard] = updatedCards.splice(source.index, 1);
     updatedCards.splice(destination.index, 0, draggedCard);
-
+    localStorage.setItem("netix", JSON.stringify(updatedCards));
     setCardsData(updatedCards);
   };
 
+  // api to get Data
+
+  const getData = () => {
+    fetch("/api/data", {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((res) => {
+        setCardsData(res);
+        localStorage.setItem("netix", JSON.stringify(res));
+        setIsLoading(false);
+      });
+  };
   useEffect(() => {
     document.addEventListener("keydown", (e) => {
       if (e.code === "Escape") {
@@ -36,6 +51,40 @@ function App() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+
+
+  // api call to post Data 
+
+  const saveData = () => {
+    setIsLoading(true);
+    fetch("/api/data", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(cardsData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setIsLoading(false);
+      })
+      .catch((error) => console.error(error));
+  };
+
+  useEffect(() => {
+    const saveInterval = setInterval(() => {
+      saveData();
+    }, 5000);
+
+    return () => {
+      clearInterval(saveInterval);
+    };
+  }, [cardsData]);
 
   return (
     <>
